@@ -10,16 +10,15 @@ const patterns = {
   svg: /svg$/i
 }
 
-function colorPalette (input, options, callback) {
+function colorPalette (input, options = {}, callback) {
   if (typeof options === 'function') {
     callback = options
     options = {}
   }
 
   const type = options.type
-  const paletteSize = options.paletteSize
 
-  // SVG
+    // SVG
   if (!Buffer.isBuffer(input)) {
     if (input.match(patterns.svg)) {
       return callback(null, getSvgColors(input, { flat: true }))
@@ -32,8 +31,8 @@ function colorPalette (input, options, callback) {
   return paletteFromBitmap(input, options, callback)
 }
 
-function paletteFromBitmap (filename, options, callback) {
-  getPixels(filename, type, function (err, pixels) {
+function paletteFromBitmap (filename, options = {}, callback) {
+  getPixels(filename, options.type, function (err, pixels) {
     if (err) return callback(err)
     const palette = getRgbaPalette(pixels.data, options.paletteSize || 5).map(function (rgba) {
       return chroma(rgba)
